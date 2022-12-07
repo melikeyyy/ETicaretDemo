@@ -1,0 +1,92 @@
+﻿@using ETicaretDemo.Dto
+@model HomeDto;
+@{
+    var urunler = TempData["urunler"];
+    int id = 0;
+
+    decimal toplam = 0;
+    foreach (var item in Model.Sepetim)
+    {
+        toplam = toplam + item.Toplam;
+    }
+}
+<style>
+
+    .img {
+        width: 100%;
+        height: 100%;
+    }
+
+   
+</style>
+<div class="row">
+    <div class="col-md-8">
+        <div class="row">
+            @foreach (var item in Model.Urunlerim)
+            {
+                <form action="/Home/SepeteEkle" method="post">
+                <div class="col-md-5">
+                    <input hidden="hidden" name="id" value="@item.Id" >
+                    <div class="form-group text-center">
+                        <img src="@item.Resim" alt="Resim Bulunamadı">
+                    </div>
+                    <h3 class="text-primary" style="font-weight:700">@item.UrunAdi</h3>
+                    <h3 class="text-danger" style="font-weight:700">@item.BirimFiyati.ToString("#,##0.00")</h3>
+                    <input class="form-contol" type="number" name="adet" value="1">
+                    <div class="form-group text-center mt-2">
+                        <button type="submit" class="btn btn-primary btn-block">Sepete Ekle</button>
+                    </div> 
+                </div>
+                </form>
+            }
+
+        </div>
+      
+        </div>
+    <div class="col-md-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>ürün adı</th>
+                    <th>adet</th>
+                    <th>birim fiyatı</th>
+                    <th>toplam tutar</th>
+                    <th>işlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Sepetim)
+                {
+                    id++;
+                    <tr>
+                     
+                        <td>@id</td>
+                        <td>@item.UrunAdi</td>
+                        <td>@item.Adet</td>
+                        <td>@item.BirimFiyati.ToString("#,##0.00")</td>
+                        <td>@item.Toplam.ToString("#,##0.00")</td>
+
+                        <td>
+                            <form action="/Home/SepettekiUrunuSil" method="post">
+                                <input hidden="hidden" name="id" value="@item.Id">
+                                <button type="submit" class="btn btn-danger">sil</button>
+                            </form>
+                            
+                        </td>
+                    </tr>
+                }
+
+             
+            </tbody>
+        </table>
+        <hr />
+        <label class="form-control">Toplam Tutar: @toplam.ToString("#,##0.00") ₺</label>
+        <h2 class="text-danger">@TempData["odeme"]</h2>
+
+        <form action="/Home/OdemeYap" method="post">
+            <button class="btn btn-warning mt-2 btn-block">ödeme yap</button>
+        </form>
+        
+        </div>
+</div>
